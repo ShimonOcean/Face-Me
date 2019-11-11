@@ -37,21 +37,18 @@ class App extends Component {
     }
   }
 
-  // Calculates dimensions for bounding box
+  // Calculates dimensions of bounding box
   calcFaceLocation = (data) => {
-    const boxSize = data.outputs[0].data.regions[0].region_info.bounding_box
-    const image = document.getElementById('inputImage')
-    const width = Number(image.width)
-    const height = Number(image.height) 
-    const newArr = data.outputs[0].data.regions.map(region => {
-        return{
-            leftCol:region.region_info.bounding_box.left_col * width,
-            topRow: region.region_info.bounding_box.top_row * height,
-            rightCol:width - (region.region_info.bounding_box.right_col * width),
-            bottomRow: height - (region.region_info.bounding_box.bottom_row * height)
-        } 
-    })
-    return newArr
+    const clarifaiFace = (data.outputs[0].data.regions[0].region_info.bounding_box);
+    const image = document.getElementById('inputimage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return {
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height - (clarifaiFace.bottom_row * height)
+    }
   }
 
   // Sets state of box to calculated box
