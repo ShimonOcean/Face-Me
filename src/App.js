@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
@@ -11,9 +10,6 @@ import FaceRecog from './components/FaceRecog/FaceRecog';
 import './App.css';
 import 'tachyons';
 
-const app = new Clarifai.App({
-  apiKey: 'a5e8e4db3f9c430ca66fbf19886ecf20'
-});
 
 // Background Particle effects options
 const particlesSelect = {
@@ -28,26 +24,29 @@ const particlesSelect = {
   }
 }
 
+// Initial State of Site on login
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id:'',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
+
 
 // Holds state for inputs, images, bounding box for faces
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id:'',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
+    this.state = initialState
     }
-  }
 
   // Update user state on register
   loadUser = (data) => {
@@ -88,9 +87,14 @@ class App extends Component {
   // On submit, sets imageUrl state to submitted link
   onSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    app.models.predict(
-      Clarifai.FACE_DETECT_MODEL, 
-      this.state.input)
+      fetch('http://localhost:3000/image', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            input: this.state.input
+        })
+      })
+      .then(response => response.json())
       // Sets state of box to calculated box
       .then(response => {
         if (response) {
@@ -114,7 +118,7 @@ class App extends Component {
   // Sets state for isSignedIn to determine which page to display
   onRouteChange = (route) => {
     if (route === 'signout'){
-      this.setState({isSignedIn: false})
+      this.setState(initialState)
     } else if (route === 'home'){
       this.setState({isSignedIn: true})
     }
