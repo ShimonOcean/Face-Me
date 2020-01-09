@@ -87,7 +87,7 @@ class App extends Component {
   // On submit, sets imageUrl state to submitted link
   onSubmit = () => {
     this.setState({imageUrl: this.state.input});
-      fetch('http://localhost:3000/image', {
+      fetch('https://salty-hamlet-04364.herokuapp.com/imageurl', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -98,7 +98,7 @@ class App extends Component {
       // Sets state of box to calculated box
       .then(response => {
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://salty-hamlet-04364.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
